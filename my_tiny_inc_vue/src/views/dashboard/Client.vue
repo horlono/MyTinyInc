@@ -33,7 +33,7 @@
 import axios from "axios";
 
 export default {
-  name: "DashboardClients",
+  name: "ClientView",
   data() {
     return {
       client: {},
