@@ -8,32 +8,29 @@
 
 <script>
 import axios from "axios";
+import { mapMutations } from "vuex";
 
 export default {
   name: "MyAccount",
   methods: {
     logout() {
+      // Appel API pour logout
       axios
         .post("/api/v1/auth/token/logout/")
-        .then((response) => {
-          axios.defaults.headers.common["Authorization"] = "";
-
-          localStorage.removeItem("token");
-
+        .then(() => {
+          // Si le logout est réussi sur le serveur, on efface le token et la session
           this.$store.commit("removeToken");
-
-          this.$router.push("/");
+          this.$router.push("/log-in"); // Rediriger vers la page de connexion
         })
         .catch((error) => {
-          if (error.response) {
-            console.log(JSON.stringify(error.response.data));
-          } else if (error.message) {
-            console.log(JSON.stringify(error.message));
-          } else {
-            console.log(JSON.stringify(error));
-          }
+          console.log("Erreur lors de la déconnexion", error);
         });
     },
+  },
+  created() {
+    if (!this.$store.state.isAuthenticated) {
+      this.$router.push("/log-in"); // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
+    }
   },
 };
 </script>
