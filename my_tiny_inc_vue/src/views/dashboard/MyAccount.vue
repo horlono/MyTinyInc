@@ -14,17 +14,8 @@ export default {
   name: "MyAccount",
   methods: {
     logout() {
-      // Appel API pour logout
-      axios
-        .post("/api/v1/auth/token/logout/")
-        .then(() => {
-          // Si le logout est réussi sur le serveur, on efface le token et la session
-          this.$store.commit("removeToken");
-          this.$router.push("/log-in"); // Rediriger vers la page de connexion
-        })
-        .catch((error) => {
-          console.log("Erreur lors de la déconnexion", error);
-        });
+      this.$store.commit("removeToken");
+      this.$router.push("/log-in");
     },
   },
   created() {

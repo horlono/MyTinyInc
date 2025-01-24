@@ -45,9 +45,13 @@ export default {
   methods: {
     getClient() {
       const clientID = this.$route.params.id;
-
+      const token = this.$store.state.token;
       axios
-        .get(`/api/v1/clients/${clientID}`)
+        .get(`/api/v1/clients/${clientID}`, {
+          headers: {
+            Authorization: `Token ${token}`, // Ajout du token dans les en-têtes
+          },
+        })
         .then((response) => {
           this.client = response.data;
         })

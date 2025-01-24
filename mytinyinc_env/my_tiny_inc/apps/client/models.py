@@ -7,7 +7,7 @@ class Client(models.Model):
     org_number = models.CharField(max_length=255,blank=True,null=True)
     address1 = models.CharField(max_length=255,blank=True,null=True)
     address2 = models.CharField(max_length=255,blank=True,null=True)
-    zipcpde = models.CharField(max_length=255,blank=True,null=True)
+    zipcode = models.CharField(max_length=255,blank=True,null=True)
     place = models.CharField(max_length=255,blank=True,null=True)
     country = models.CharField(max_length=255,blank=True,null=True)
     contact_person = models.CharField(max_length=255,blank=True,null=True)
@@ -21,3 +21,4 @@ class Client(models.Model):
         return '%s'% self.name
     
 
+2

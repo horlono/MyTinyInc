@@ -1,29 +1,24 @@
 <template>
-  <div class="page-client">
+  <div class="page-clients">
     <div class="columns is-multiline">
       <div class="column is-12">
-        <h1 class="title">{{ client.name }}</h1>
+        <h1 class="title">Clients</h1>
 
-        <router-link
-          :to="{ name: 'EditClient', params: { id: client.id } }"
-          class="button is-light mt-4"
-          >Edit</router-link
+        <router-link :to="{ name: 'AddClient' }" class="button is-light mt-4"
+          >Add client</router-link
         >
       </div>
 
-      <div class="column is-12">
-        <h2 class="subtitle">Contact details</h2>
+      <div class="column is-3" v-for="client in clients" v-bind:key="client.id">
+        <div class="box">
+          <h3 class="is-size-4 mb-4">{{ client.name }}</h3>
 
-        <p>
-          <strong>{{ client.name }}</strong>
-        </p>
-
-        <p v-if="client.address1">{{ client.address1 }}</p>
-        <p v-if="client.address2">{{ client.address2 }}</p>
-        <p v-if="client.zipcode || client.place">
-          {{ client.zipcode }} {{ client.place }}
-        </p>
-        <p v-if="client.country">{{ client.country }}</p>
+          <router-link
+            :to="{ name: 'ClientView', params: { id: client.id } }"
+            class="button is-light"
+            >Details</router-link
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -36,20 +31,25 @@ export default {
   name: "DashboardClients",
   data() {
     return {
-      client: {},
+      clients: [],
     };
   },
   mounted() {
-    this.getClient();
+    this.getClients();
   },
   methods: {
-    getClient() {
-      const clientID = this.$route.params.id;
+    getClients() {
+      // Ajouter le token d'authentification à l'en-tête
+      const token = this.$store.state.token;
 
       axios
-        .get(`/api/v1/clients/${clientID}`)
+        .get("/api/v1/clients/", {
+          headers: {
+            Authorization: `Token ${token}`, // Ajout du token dans les en-têtes
+          },
+        })
         .then((response) => {
-          this.client = response.data;
+          this.clients = response.data; // Récupérer directement les données
         })
         .catch((error) => {
           console.log(JSON.stringify(error));

@@ -11,24 +11,27 @@
           <template v-if="$store.state.isAuthenticated">
             <router-link to="/dashboard" class="navbar-item"
               >Dashboard</router-link
-            ><router-link to="/dashboard/clients" class="navbar-item"
+            >
+            <router-link to="/dashboard/clients" class="navbar-item"
               >Clients</router-link
             >
             <div class="navbar-item">
-              <div class="buttons"></div>
-              <router-link to="dashboard/my-account" class="button is-light"
-                >My Account</router-link
-              >
+              <div class="buttons">
+                <router-link to="/dashboard/my-account" class="button is-light"
+                  >My Account</router-link
+                >
+                <button @click="logout" class="button is-danger">Logout</button>
+              </div>
             </div>
           </template>
           <template v-else>
             <router-link to="/" class="navbar-item">Home</router-link>
             <div class="navbar-item">
               <div class="buttons">
-                <router-link to="/sign-up" class="button is-succes"
+                <router-link to="/sign-up" class="button is-success"
                   ><strong>Sign up</strong></router-link
                 >
-                <router-link to="/log-in" class="button is-succes"
+                <router-link to="/log-in" class="button is-success"
                   ><strong>Log in</strong></router-link
                 >
               </div>
@@ -45,20 +48,28 @@
     </footer>
   </div>
 </template>
+
 <script>
-import axios from "axios";
 export default {
   name: "App",
+
   beforeCreate() {
+    // Initialisation du store et validation du token
     this.$store.commit("initializeStore");
 
-    const token = this.$store.state.token;
+    this.$store.dispatch("validateToken").then((isValid) => {
+      if (!isValid) {
+        // Redirection vers la page de connexion si le token est invalide
+        this.$router.push("/log-in");
+      }
+    });
+  },
 
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = "Token " + token;
-    } else {
-      axios.defaults.headers.common["Authorization"] = "";
-    }
+  methods: {
+    logout() {
+      this.$store.commit("removeToken");
+      this.$router.push("/log-in");
+    },
   },
 };
 </script>
