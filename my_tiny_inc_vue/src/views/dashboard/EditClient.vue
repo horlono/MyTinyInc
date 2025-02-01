@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/utils/axios";
 
 export default {
   name: "EditClient",
@@ -129,9 +129,9 @@ export default {
   methods: {
     getClient() {
       const clientID = this.$route.params.id;
-
-      axios
-        .get(`/api/v1/clients/${clientID}`)
+      const token = this.$store.state.token;
+      api
+        .get(`/clients/${clientID}`)
         .then((response) => {
           this.client = response.data;
         })
@@ -141,9 +141,9 @@ export default {
     },
     submitForm() {
       const clientID = this.$route.params.id;
-
-      axios
-        .patch(`/api/v1/clients/${clientID}/`, this.client)
+      const token = this.$store.state.token;
+      api
+        .patch(`/clients/${clientID}/`, this.client)
         .then((response) => {
           this.$router.push("/dashboard/clients");
         })

@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/utils/axios";
 
 export default {
   name: "ClientView",
@@ -46,12 +46,8 @@ export default {
     getClient() {
       const clientID = this.$route.params.id;
       const token = this.$store.state.token;
-      axios
-        .get(`/api/v1/clients/${clientID}`, {
-          headers: {
-            Authorization: `Token ${token}`, // Ajout du token dans les en-têtes
-          },
-        })
+      api
+        .get(`/clients/${clientID}`)
         .then((response) => {
           this.client = response.data;
         })

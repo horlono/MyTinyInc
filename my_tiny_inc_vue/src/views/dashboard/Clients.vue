@@ -25,8 +25,7 @@
 </template>
 
 <script>
-import axios from "axios";
-
+import api from "@/utils/axios";
 export default {
   name: "DashboardClients",
   data() {
@@ -42,12 +41,8 @@ export default {
       // Ajouter le token d'authentification à l'en-tête
       const token = this.$store.state.token;
 
-      axios
-        .get("/api/v1/clients/", {
-          headers: {
-            Authorization: `Token ${token}`, // Ajout du token dans les en-têtes
-          },
-        })
+      api
+        .get("/clients/")
         .then((response) => {
           this.clients = response.data; // Récupérer directement les données
         })

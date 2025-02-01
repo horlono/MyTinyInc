@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/utils/axios";
 
 export default {
   name: "AddClient",
@@ -125,8 +125,8 @@ export default {
   },
   methods: {
     submitForm() {
-      axios
-        .post("/api/v1/clients/", this.client)
+      api
+        .post("/clients/", this.client)
         .then((response) => {
           this.$router.push("/dashboard/clients");
         })

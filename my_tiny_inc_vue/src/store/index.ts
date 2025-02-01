@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import axios from "axios";
+import api from "@/utils/axios";
 
 export default createStore({
   state: {
@@ -18,13 +19,13 @@ export default createStore({
         state.isAuthenticated = true;
 
         // Configure Axios avec le token dès l'initialisation
-        axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+        api.defaults.headers.common["Authorization"] = `Token ${token}`;
       } else {
         state.token = null;
         state.isAuthenticated = false;
 
         // Retirer l'en-tête Authorization si aucun token n'est trouvé
-        delete axios.defaults.headers.common["Authorization"];
+        delete api.defaults.headers.common["Authorization"];
       }
     },
     setToken(state, token: string) {
@@ -35,7 +36,7 @@ export default createStore({
       localStorage.setItem("token", token);
 
       // Configure Axios immédiatement après la connexion
-      axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+      api.defaults.headers.common["Authorization"] = `Token ${token}`;
     },
     removeToken(state) {
       state.token = null;
@@ -45,7 +46,7 @@ export default createStore({
       localStorage.removeItem("token");
 
       // Supprimer l'en-tête Authorization d'Axios
-      delete axios.defaults.headers.common["Authorization"];
+      delete api.defaults.headers.common["Authorization"];
     },
     setUser(state, user) {
       state.user = user;
@@ -59,7 +60,7 @@ export default createStore({
       }
 
       try {
-        const response = await axios.get(
+        const response = await api.get(
           "http://127.0.0.1:8000/api/v1/auth/validate-token"
         );
         // Si la validation réussit, récupérer les données utilisateur
