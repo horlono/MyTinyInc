@@ -45,7 +45,6 @@ export default {
   methods: {
     getClient() {
       const clientID = this.$route.params.id;
-      const token = this.$store.state.token;
       api
         .get(`/clients/${clientID}`)
         .then((response) => {
