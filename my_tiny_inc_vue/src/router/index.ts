@@ -9,6 +9,7 @@ import Client from "@/views/dashboard/Client.vue";
 import AddClient from "@/views/dashboard/AddClient.vue";
 import EditClient from "@/views/dashboard/EditClient.vue";
 import EditTeam from "@/views/dashboard/EditTeam.vue";
+import Invoices from "@/views/dashboard/Invoices.vue";
 import store from "@/store";
 
 const routes: Array<RouteRecordRaw> = [
@@ -40,6 +41,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard",
     name: "DashboardView",
     component: Dashboard,
+    meta: {
+      requireLogin: true,
+    },
+  },
+  {
+    path: "/dashboard/invoices",
+    name: "DashboardInvoices",
+    component: Invoices,
     meta: {
       requireLogin: true,
     },
