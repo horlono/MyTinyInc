@@ -23,6 +23,12 @@
               <td>{{ invoice.client }}</td>
               <td>{{ invoice.gross_amount }}</td>
               <td>{{ invoice.is_paid }}</td>
+              <td>
+                <router-link
+                  :to="{ name: 'DetailInvoice', params: { id: invoice.id } }"
+                  >Details</router-link
+                >
+              </td>
             </tr>
           </tbody>
         </table>

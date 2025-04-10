@@ -46,6 +46,8 @@ class Invoice(models.Model):
     modified_by = models.ForeignKey(User, related_name='modified_invoices', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        ordering= ['-created_at'] # ordering by created_at descending
 
 
 class Item(models.Model):

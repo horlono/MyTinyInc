@@ -15,3 +15,20 @@ class InvoiceSerializer(serializers.ModelSerializer):
         ),
     
         fields = '__all__'
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = (
+            "id",
+           
+            "title",
+            "quantity",
+            "unit_price",
+            "net_amount",
+            "vat_rate",
+            "discount"
+        )
+        read_only_fields = (
+            "invoice",
+            
+        )
