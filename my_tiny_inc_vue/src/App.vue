@@ -20,6 +20,11 @@
             >
             <div class="navbar-item">
               <div class="buttons">
+                <router-link
+                  to="/dashboard/invoices/add"
+                  class="button is-success"
+                  >Add Invoice</router-link
+                >
                 <router-link to="/dashboard/my-account" class="button is-light"
                   >My Account</router-link
                 >

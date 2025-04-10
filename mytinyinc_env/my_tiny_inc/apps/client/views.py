@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from rest_framework import filters
+
 
 from rest_framework import viewsets 
 
@@ -10,6 +12,9 @@ from django.core.exceptions import PermissionDenied
 class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
+    filter_backends = [filters.SearchFilter]  # <-- ajout
+    search_fields = ['name', 'email', 'org_number']
+  # <-- permet de rechercher sur 'name' 'email' and 'org_number'
 
     def get_queryset(self):
         return self.queryset.filter(created_by=self.request.user)
@@ -19,8 +24,6 @@ class ClientViewSet(viewsets.ModelViewSet):
     
     def perform_update(self, serializer):
         obj = self.get_object()
-
         if self.request.user != obj.created_by:
             raise PermissionDenied('Wrong object owner')
-    
         serializer.save()
