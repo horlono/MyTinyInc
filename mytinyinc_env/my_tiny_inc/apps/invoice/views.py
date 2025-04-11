@@ -9,7 +9,7 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.all()
     
 def perform_create(self, serializer):
-    team = self.request.user.teams.first()
+    team = self.request.user.teams.first() 
     invoice_number = team.first_invoice_number
     team.first_invoice_number = invoice_number + 1
     team.save()
