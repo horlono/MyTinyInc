@@ -19,7 +19,7 @@
 
           <tbody>
             <tr v-for="invoice in invoices" v-bind:key="invoice.id">
-              <td>{{ invoice.id }}</td>
+              <td>{{ invoice.invoice_number }}</td>
               <td>{{ invoice.client }}</td>
               <td>{{ invoice.gross_amount }}</td>
               <td>{{ invoice.is_paid }}</td>

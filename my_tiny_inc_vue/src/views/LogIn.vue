@@ -42,6 +42,7 @@
   </div>
 </template>
 <script>
+import api from "@/utils/axios";
 import axios from "axios";
 export default {
   name: "LogIn",
@@ -53,14 +54,14 @@ export default {
     };
   },
   methods: {
-    submitForm(e) {
+    async submitForm(e) {
       axios.defaults.headers.common["Authorization"] = "";
       localStorage.removeItem("token");
       const formData = {
         username: this.username,
         password: this.password,
       };
-      axios
+      await axios
         .post("/api/v1/auth/token/login/", formData)
         .then((response) => {
           const token = response.data.auth_token;
@@ -88,6 +89,20 @@ export default {
           } else {
             console.log(JSON.stringify(error));
           }
+        });
+      axios
+        .get("/api/v1/auth/users/me/")
+        .then((response) => {
+          this.$store.commit("setUser", {
+            user: response.data.username,
+            "id ": response.data.id,
+          });
+          localStorage.setItem("user", response.data.username);
+          localStorage.setItem("userId", response.data.id);
+          this.$router.push("/dashboard");
+        })
+        .catch((error) => {
+          console.log(JSON.stringify(error));
         });
     },
   },

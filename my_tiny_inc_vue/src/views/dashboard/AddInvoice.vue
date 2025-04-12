@@ -23,7 +23,7 @@
 
         <div class="box mt-4" v-if="invoice.client">
           <p>
-            <strong>{{ invoice.client_name }}</strong>
+            <strong>{{ invoice.client.name }}</strong>
           </p>
           <p><strong>Email:</strong> {{ invoice.client.email }}</p>
           <p v-if="invoice.client.address1">{{ invoice.client.address1 }}</p>
@@ -41,9 +41,10 @@
         <ItemForm
           v-for="item in invoice.items"
           v-bind:key="item.item_num"
-          v-bind:item="item"
-          @updatePrice="updateTotals(item)"
-        ></ItemForm>
+          v-bind:initialItem="item"
+          v-on:updatePrice="updateTotals"
+        >
+        </ItemForm>
 
         <button class="button is-light" @click="addItem">+</button>
       </div>
@@ -62,13 +63,15 @@
     </div>
   </div>
 </template>
+
 <script>
 import api from "@/utils/axios";
 import { toast } from "bulma-toast";
+
 import ItemForm from "@/components/ItemForm.vue";
+
 export default {
   name: "AddInvoice",
-
   components: {
     ItemForm,
   },
@@ -111,42 +114,36 @@ export default {
       this.invoice.items.push({
         item_num: this.invoice.items.length,
         title: "",
-        unit_price: 0,
+        unit_price: "",
         quantity: 1,
         vat_rate: 0,
         net_amount: 0,
       });
     },
     updateTotals(changedItem) {
-      console.log("updateTotals", changedItem);
+      console.log("changedItem", changedItem);
+      console.log("this.invoice.items", this.invoice.items);
       let net_amount = 0;
       let vat_amount = 0;
 
-      // Find the modified item in the list of items
-      const item = this.invoice.items.find(
+      let item = this.invoice.items.filter(
         (i) => i.item_num === changedItem.item_num
       );
 
-      // If the item is found, update its net_amount
-      if (item) {
-        item.net_amount = item.unit_price * item.quantity; // Recalculate net_amount based on unit_price and quantity
-      }
+      item = changedItem;
 
-      // Recalculate the totals for all items
       for (let i = 0; i < this.invoice.items.length; i++) {
         const vat_rate = this.invoice.items[i].vat_rate;
 
-        vat_amount += this.invoice.items[i].net_amount * (vat_rate / 100); // Add VAT amount for each item
-        net_amount += this.invoice.items[i].net_amount; // Add net amount for each item
+        vat_amount += this.invoice.items[i].net_amount * (vat_rate / 100);
+        net_amount += this.invoice.items[i].net_amount;
       }
 
-      // Update the totals in the invoice
-      this.invoice.net_amount = net_amount; // Total net amount
-      this.invoice.vat_amount = vat_amount; // Total VAT amount
-      this.invoice.gross_amount = net_amount + vat_amount; // Total gross amount (net + VAT)
-      this.invoice.discount_amount = 0; // If you have a discount_amount, update it here
+      this.invoice.net_amount = net_amount;
+      this.invoice.vat_amount = vat_amount;
+      this.invoice.gross_amount = net_amount + vat_amount;
+      this.invoice.discount_amount = 0;
     },
-
     submitForm() {
       this.invoice.client_name = this.invoice.client.name;
       this.invoice.client_email = this.invoice.client.email;
@@ -160,7 +157,6 @@ export default {
       this.invoice.client_contact_reference =
         this.invoice.client.contact_reference;
       this.invoice.client = this.invoice.client.id;
-      console.log("Données envoyées :", JSON.stringify(this.invoice));
 
       api
         .post("/invoices/", this.invoice)
@@ -174,7 +170,7 @@ export default {
             position: "bottom-right",
           });
 
-          this.$router.push({ name: "DashboardInvoices" });
+          this.$router.push("/dashboard/invoices");
         })
         .catch((error) => {
           console.log(JSON.stringify(error));
@@ -183,6 +179,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss">
 .select,
 .select select {

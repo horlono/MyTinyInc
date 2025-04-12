@@ -32,6 +32,13 @@
         </div>
 
         <div class="field">
+          <label>Bankaccount</label>
+          <div class="control">
+            <input type="text" class="input" v-model="team.bankaccount" />
+          </div>
+        </div>
+
+        <div class="field">
           <div class="control">
             <button class="button is-success" @click="submitForm">Save</button>
           </div>
@@ -43,6 +50,7 @@
 
 <script>
 import api from "@/utils/axios";
+import axios from "axios";
 import { toast } from "bulma-toast";
 
 export default {
@@ -57,7 +65,7 @@ export default {
   },
   methods: {
     getOrCreateTeam() {
-      api
+      axios
         .get("teams/")
         .then((response) => {
           this.team = response.data[0];
@@ -67,7 +75,7 @@ export default {
         });
     },
     submitForm() {
-      api
+      axios
         .patch(`/teams/${this.team.id}/`, this.team)
         .then((response) => {
           toast({

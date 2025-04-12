@@ -1,10 +1,10 @@
 import { createStore } from "vuex";
-import axios from "axios";
 import api from "@/utils/axios";
 
 export default createStore({
   state: {
     user: {
+      id: "",
       username: "",
     },
     isAuthenticated: false,
@@ -17,39 +17,36 @@ export default createStore({
       if (token) {
         state.token = token;
         state.isAuthenticated = true;
-
-        // Configure Axios avec le token dès l'initialisation
+        state.user.username = localStorage.getItem("username") || "";
+        state.user.id = localStorage.getItem("userId") || "";
         api.defaults.headers.common["Authorization"] = `Token ${token}`;
       } else {
+        state.user.id = "";
+        state.user.username = "";
         state.token = null;
         state.isAuthenticated = false;
-
-        // Retirer l'en-tête Authorization si aucun token n'est trouvé
         delete api.defaults.headers.common["Authorization"];
       }
     },
     setToken(state, token: string) {
       state.token = token;
       state.isAuthenticated = true;
-
-      // Enregistrer le token dans localStorage
       localStorage.setItem("token", token);
-
-      // Configure Axios immédiatement après la connexion
       api.defaults.headers.common["Authorization"] = `Token ${token}`;
     },
     removeToken(state) {
       state.token = null;
       state.isAuthenticated = false;
-
-      // Supprimer le token de localStorage
+      state.user = { id: "", username: "" };
       localStorage.removeItem("token");
-
-      // Supprimer l'en-tête Authorization d'Axios
+      localStorage.removeItem("username");
+      localStorage.removeItem("userId");
       delete api.defaults.headers.common["Authorization"];
     },
     setUser(state, user) {
       state.user = user;
+      localStorage.setItem("username", user.username);
+      localStorage.setItem("userId", user.id);
     },
   },
   actions: {
@@ -60,12 +57,15 @@ export default createStore({
       }
 
       try {
+        // Utilisation de l'endpoint correct pour récupérer les données utilisateur
         const response = await api.get(
-          "http://127.0.0.1:8000/api/v1/auth/validate-token"
+          "http://127.0.0.1:8000/api/v1/auth/users/me/"
         );
+        console.log(response.data);
+
         // Si la validation réussit, récupérer les données utilisateur
-        commit("setUser", response.data.user);
-        return true;
+        commit("setUser", response.data); // Sauvegarder l'utilisateur dans Vuex
+        return true; // Le token est valide et l'utilisateur est authentifié
       } catch (error) {
         // En cas d'erreur (token invalide, expiré, etc.), déconnecter l'utilisateur
         commit("removeToken");

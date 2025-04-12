@@ -26,7 +26,6 @@
         <table class="table is-fullwidth">
           <thead>
             <tr>
-              <td>#</td>
               <td>Title</td>
               <td>Quantity</td>
               <td>Amount</td>
@@ -34,8 +33,7 @@
           </thead>
 
           <tbody>
-            <tr v-for="item in items" v-bind:key="item.id">
-              <td>{{ item.id }}</td>
+            <tr v-for="item in invoice.items" v-bind:key="item.id">
               <td>{{ item.title }}</td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.net_amount }}</td>
@@ -58,9 +56,8 @@ export default {
       items: [],
     };
   },
-  async mounted() {
-    await this.getInvoice();
-    await this.getItems();
+  mounted() {
+    this.getInvoice();
   },
   methods: {
     getInvoice() {
@@ -70,18 +67,6 @@ export default {
         .get(`/invoices/${invoiceID}`)
         .then((response) => {
           this.invoice = response.data;
-        })
-        .catch((error) => {
-          console.log(JSON.stringify(error));
-        });
-    },
-    getItems() {
-      const invoiceID = this.$route.params.id;
-
-      api
-        .get(`/items/?invoice_id=${invoiceID}`)
-        .then((response) => {
-          this.items = response.data;
         })
         .catch((error) => {
           console.log(JSON.stringify(error));

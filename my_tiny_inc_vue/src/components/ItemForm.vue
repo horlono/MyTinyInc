@@ -60,14 +60,13 @@
 
 <script>
 export default {
+  name: "ItemForm",
+  props: {
+    initialItem: Object,
+  },
   data() {
     return {
-      item: {
-        unit_price: 0,
-        quantity: 0,
-        vat_rate: 0,
-        net_amount: 0,
-      },
+      item: this.initialItem,
     };
   },
   computed: {
@@ -76,20 +75,12 @@ export default {
       const quantity = this.item.quantity;
       const vat_rate = this.item.vat_rate;
 
-      return unit_price * quantity + (unit_price * quantity * vat_rate) / 100;
-    },
-  },
-  watch: {
-    // Watch for changes on item (or its specific properties)
-    item: {
-      handler(newValue) {
-        // Calculate the net amount whenever item changes
-        newValue.net_amount = newValue.unit_price * newValue.quantity;
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.item.net_amount = unit_price * quantity;
 
-        // Emit the event with the updated item
-        this.$emit("updatePrice", newValue);
-      },
-      deep: true, // Watch nested properties of `item`
+      this.$emit("updatePrice", this.item);
+
+      return this.item.net_amount + this.item.net_amount * (vat_rate / 100);
     },
   },
 };
