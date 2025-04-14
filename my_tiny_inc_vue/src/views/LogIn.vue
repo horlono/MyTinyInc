@@ -37,13 +37,16 @@
             </div>
           </div>
         </form>
+        <hr />
+
+        <router-link to="/sign-up">Click here</router-link> to sign up!
       </div>
     </div>
   </div>
 </template>
 <script>
 import api from "@/utils/axios";
-import axios from "axios";
+
 export default {
   name: "LogIn",
   data() {
@@ -54,56 +57,45 @@ export default {
     };
   },
   methods: {
-    async submitForm(e) {
-      axios.defaults.headers.common["Authorization"] = "";
-      localStorage.removeItem("token");
-      const formData = {
-        username: this.username,
-        password: this.password,
-      };
-      await axios
-        .post("/api/v1/auth/token/login/", formData)
-        .then((response) => {
-          const token = response.data.auth_token;
-          this.$store.commit("setToken", token);
-          axios.defaults.headers.common["Authorization"] = "Token" + token;
-          localStorage.setItem("token", token);
-          this.$router.push("/dashboard");
-        })
-        .catch((error) => {
-          if (error.response) {
-            if (error.response.data.non_field_errors) {
-              this.errors.push(
-                "Invalid username or password. Please try again"
-              );
-            } else {
-              for (const property in error.response.data) {
-                this.errors.push(
-                  `${property}: ${error.response.data[property]}`
-                );
-              }
-            }
-            console.log(JSON.stringify(error.response.data));
-          } else if (error.message) {
-            console.log(JSON.stringify(error.message));
-          } else {
-            console.log(JSON.stringify(error));
+    async submitForm() {
+      this.errors = [];
+
+      // Reset Auth
+      this.$store.commit("removeToken");
+
+      try {
+        const formData = {
+          username: this.username,
+          password: this.password,
+        };
+
+        // 🔐 Login
+        const response = await api.post("/auth/token/login/", formData);
+        const token = response.data.auth_token;
+        this.$store.commit("setToken", token);
+
+        // 👤 Get User
+        const userResponse = await api.get("/users/me/");
+        this.$store.commit("setUser", {
+          id: userResponse.data.id,
+          username: userResponse.data.username,
+        });
+
+        // ✅ Redirect
+        this.$router.push("/dashboard");
+      } catch (error) {
+        if (error.response?.data?.non_field_errors) {
+          this.errors.push("Invalid username or password. Please try again.");
+        } else if (error.response?.data) {
+          for (const property in error.response.data) {
+            this.errors.push(`${property}: ${error.response.data[property]}`);
           }
-        });
-      axios
-        .get("/api/v1/auth/users/me/")
-        .then((response) => {
-          this.$store.commit("setUser", {
-            user: response.data.username,
-            "id ": response.data.id,
-          });
-          localStorage.setItem("user", response.data.username);
-          localStorage.setItem("userId", response.data.id);
-          this.$router.push("/dashboard");
-        })
-        .catch((error) => {
-          console.log(JSON.stringify(error));
-        });
+        } else if (error.message) {
+          this.errors.push(error.message);
+        } else {
+          this.errors.push("An unknown error occurred.");
+        }
+      }
     },
   },
 };
