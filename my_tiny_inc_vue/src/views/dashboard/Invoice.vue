@@ -3,6 +3,9 @@
     <div class="columns is-multiline">
       <div class="column is-12">
         <h1 class="title">Invoice - {{ invoice.invoice_number }}</h1>
+        <hr />
+
+        <button @click="getPdf()" class="button is-dark">Generate PDF</button>
       </div>
 
       <div class="column is-12">
@@ -47,6 +50,7 @@
 
 <script>
 import api from "@/utils/axios";
+import fileDownload from "js-file-download";
 
 export default {
   name: "DetailInvoice",
@@ -67,6 +71,21 @@ export default {
         .get(`/invoices/${invoiceID}`)
         .then((response) => {
           this.invoice = response.data;
+        })
+        .catch((error) => {
+          console.log(JSON.stringify(error));
+        });
+    },
+    getPdf() {
+      const invoiceID = this.$route.params.id;
+
+      api
+        .get(`/invoices/${invoiceID}/generate_pdf/`, { responseType: "blob" })
+        .then((response) => {
+          fileDownload(
+            response.data,
+            `invoice_${this.invoice.invoice_number}.pdf`
+          );
         })
         .catch((error) => {
           console.log(JSON.stringify(error));

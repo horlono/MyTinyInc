@@ -46,8 +46,11 @@ class Invoice(models.Model):
     modified_by = models.ForeignKey(User, related_name='modified_invoices', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
         ordering= ['-created_at'] # ordering by created_at descending
+    def get_due_date(self):
+        return self.created_at + timedelta(days=self.due_days)    
 
 
 class Item(models.Model):
@@ -58,3 +61,7 @@ class Item(models.Model):
     net_amount = models.DecimalField(max_digits=6, decimal_places=2)
     vat_rate = models.IntegerField(default=0)
     discount = models.IntegerField(default=0)
+    
+    def get_gross_amount(self):
+        vat_rate = decimal.Decimal(self.vat_rate) / 100
+        return self.net_amount * (1 + vat_rate)
