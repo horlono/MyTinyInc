@@ -7,6 +7,13 @@ class Team(models.Model):
     first_invoice_number = models.IntegerField(default=1)
     bankaccount = models.CharField(max_length=266, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='teams', on_delete=models.CASCADE)
+    email = models.EmailField(max_length=255, blank=True, null=True)
+    address1 = models.CharField(max_length=255, blank=True, null=True)
+    address2 = models.CharField(max_length=255, blank=True, null=True)
+    zipcode = models.CharField(max_length=255, blank=True, null=True)
+    place = models.CharField(max_length=255, blank=True, null=True)
+    website = models.CharField(max_length=255, blank=True, null=True)
+    #logo = models.ImageField(upload_to='logos/', blank=True, null=True)
 
 
     def __str__(self):

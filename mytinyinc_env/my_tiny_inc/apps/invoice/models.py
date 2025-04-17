@@ -50,7 +50,9 @@ class Invoice(models.Model):
     class Meta:
         ordering= ['-created_at'] # ordering by created_at descending
     def get_due_date(self):
-        return self.created_at + timedelta(days=self.due_days)    
+        return self.created_at + timedelta(days=self.due_days)
+    def get_due_date_formatted(self):
+        return self.get_due_date().strftime('%d.%m-%Y')    
 
 
 class Item(models.Model):

@@ -1,5 +1,17 @@
 <template>
   <div class="page-clients">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li>
+          <router-link :to="{ name: 'DashboardView' }">Dashboard</router-link>
+        </li>
+        <li class="is-active">
+          <router-link :to="{ name: 'DashboardClients' }" aria-current="true"
+            >Clients</router-link
+          >
+        </li>
+      </ul>
+    </nav>
     <div class="columns is-multiline">
       <div class="column is-12">
         <h1 class="title">Clients</h1>

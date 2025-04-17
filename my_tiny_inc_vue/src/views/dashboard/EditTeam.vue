@@ -37,6 +37,40 @@
             <input type="text" class="input" v-model="team.bankaccount" />
           </div>
         </div>
+        <div class="field">
+          <label>Email</label>
+          <div class="control">
+            <input type="text" class="input" v-model="team.email" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Address</label>
+          <div class="control">
+            <input type="text" class="input" v-model="team.address1" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Address 2</label>
+          <div class="control">
+            <input type="text" class="input" v-model="team.address2" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Zipcode</label>
+          <div class="control">
+            <input type="text" class="input" v-model="team.zipcode" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Place</label>
+          <div class="control">
+            <input type="text" class="input" v-model="team.place" />
+          </div>
+        </div>
 
         <div class="field">
           <div class="control">
@@ -65,7 +99,7 @@ export default {
   },
   methods: {
     getOrCreateTeam() {
-      axios
+      api
         .get("teams/")
         .then((response) => {
           this.team = response.data[0];
@@ -75,7 +109,7 @@ export default {
         });
     },
     submitForm() {
-      axios
+      api
         .patch(`/teams/${this.team.id}/`, this.team)
         .then((response) => {
           toast({

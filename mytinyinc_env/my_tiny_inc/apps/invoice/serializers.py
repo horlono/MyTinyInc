@@ -56,6 +56,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "discount_amount",
             "items",
             "bankaccount",
+            "get_due_date_formatted",
         )
     
     def create(self, validated_data):

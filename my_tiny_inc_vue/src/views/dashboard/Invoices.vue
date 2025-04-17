@@ -12,6 +12,7 @@
               <th>#</th>
               <th>Client</th>
               <th>Amount</th>
+              <th>Due Date</th>
               <th>Is paid</th>
               <th></th>
             </tr>
@@ -22,7 +23,8 @@
               <td>{{ invoice.invoice_number }}</td>
               <td>{{ invoice.client }}</td>
               <td>{{ invoice.gross_amount }}</td>
-              <td>{{ invoice.is_paid }}</td>
+              <td>{{ invoice.get_due_date_formatted }}</td>
+              <td>{{ getStatusLabel(invoice) }}</td>
               <td>
                 <router-link
                   :to="{ name: 'DetailInvoice', params: { id: invoice.id } }"
@@ -62,6 +64,31 @@ export default {
         .catch((error) => {
           console.log(JSON.stringify(error));
         });
+    },
+    getStatusLabel(invoice) {
+      if (invoice.is_paid) {
+        return "Is paid";
+      } else {
+        return "Is not paid";
+      }
+    },
+    getInvoiceType(invoice) {
+      if (invoice.invoice_type === "creditnote") {
+        return "Credit note";
+      } else {
+        return "Invoice";
+      }
+    },
+    getInvoiceDate(invoice) {
+      const date = new Date(invoice.invoice_date);
+      return date.toLocaleDateString("en-GB");
+    },
+    getDueDate(invoice) {
+      const date = new Date(invoice.due_date);
+      return date.toLocaleDateString("en-GB");
+    },
+    getInvoiceNumber(invoice) {
+      return invoice.invoice_number;
     },
   },
 };
