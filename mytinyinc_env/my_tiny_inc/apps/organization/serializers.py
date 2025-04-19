@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Team
-class TeamSerializer(serializers.ModelSerializer):
+from .models import Organization
+class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Team
+        model = Organization
         fields = '__all__'
         read_only_fields = ('created_by',)

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from apps.client.models import Client
-from apps.team.models import Team
+from apps.organization.models import Organization
 
 
 class Invoice(models.Model):
@@ -40,7 +40,7 @@ class Invoice(models.Model):
     vat_amount = models.DecimalField(max_digits=6, decimal_places=2)
     net_amount = models.DecimalField(max_digits=6, decimal_places=2)
     discount_amount = models.DecimalField(max_digits=6, decimal_places=2)
-    team = models.ForeignKey(Team, related_name='invoices', on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, related_name='invoices', on_delete=models.CASCADE)
     client = models.ForeignKey(Client, related_name='invoices', on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, related_name='created_invoices', on_delete=models.CASCADE)
     modified_by = models.ForeignKey(User, related_name='modified_invoices', on_delete=models.CASCADE)

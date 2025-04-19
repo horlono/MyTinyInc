@@ -24,7 +24,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invoice
         read_only_fields = (
-            "team",
+            "organization",
             "invoice_number",
             "created_at",
             "created_by",

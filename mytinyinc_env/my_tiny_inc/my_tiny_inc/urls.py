@@ -22,7 +22,7 @@ urlpatterns = [
     path('api/v1/', include('djoser.urls')),                  # Gestion des utilisateurs
     path('api/v1/auth/', include('djoser.urls.authtoken')),   # Authentification par token
     path('api/v1/', include('apps.client.urls')),
-    path('api/v1/', include('apps.team.urls')),
+    path('api/v1/', include('apps.organization.urls')),
     path('api/v1/', include('apps.invoice.urls')),
 
 ]

@@ -14,7 +14,7 @@ from rest_framework import status, authentication, permissions
 from .serializers import InvoiceSerializer, ItemSerializer
 from .models import Invoice, Item
 
-from apps.team.models import Team
+from apps.organization.models import Organization
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
@@ -22,17 +22,17 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.all()
 
     def perform_create(self, serializer):
-        team = self.request.user.teams.first()
-        invoice_number = team.first_invoice_number
-        team.first_invoice_number = invoice_number + 1
-        team.save()
+        organization = self.request.user.organizations.first()
+        invoice_number = organization.first_invoice_number
+        organization.first_invoice_number = invoice_number + 1
+        organization.save()
 
         serializer.save(
             created_by=self.request.user,
-            team=team,
+            organization=organization,
             modified_by=self.request.user,
             invoice_number=invoice_number,
-            bankaccount= team.bankaccount,
+            bankaccount= organization.bankaccount,
            
         )
 
@@ -50,10 +50,10 @@ class InvoiceViewSet(viewsets.ModelViewSet):
 @permission_classes([permissions.IsAuthenticated])
 def generate_pdf(request, invoice_id):
     invoice = get_object_or_404(Invoice, pk=invoice_id, created_by=request.user)
-    team = Team.objects.filter(created_by=request.user).first()
+    organization = Organization.objects.filter(created_by=request.user).first()
 
     template = get_template('pdf.html')
-    html = template.render({'invoice': invoice, 'team': team})
+    html = template.render({'invoice': invoice, 'organization': organization})
     pdf = pdfkit.from_string(html, False)
     response = HttpResponse(pdf, content_type='application/pdf')
     filename = f"invoice_{invoice.invoice_number}.pdf"

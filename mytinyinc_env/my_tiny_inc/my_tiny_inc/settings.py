@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'apps.client',
-    'apps.team',
+    'apps.organization',
     'apps.invoice',
     'django_extensions',
 ]

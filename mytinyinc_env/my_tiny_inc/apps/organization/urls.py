@@ -1,8 +1,8 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import TeamViewSet
+from .views import OrganizationViewSet
 router = DefaultRouter()
-router.register('teams', TeamViewSet, basename='teams')
+router.register('organizations', OrganizationViewSet, basename='organizations')
 urlpatterns = [
     path('', include(router.urls)),
 ]
